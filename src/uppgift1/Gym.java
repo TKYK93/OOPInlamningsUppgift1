@@ -83,27 +83,12 @@ public class Gym {
         }
     }
 
-    public String findCustomersLatestPayment(long id){
-        if(findCustomer(id) == null){
-            return null;
-        }
-        return findCustomer(id).getLatestPaymentDate();
-    }
-
-    public String findCustomersLatestPayment(String name){
-        if(findCustomer(name) == null){
-            return null;
-        }
-        return findCustomer(name).getLatestPaymentDate();
-    }
-
     public int checkCustomersStatus(Customer customer, LocalDate today){
         if(customer == null){
             return 0;
         }
 
-        long customersId = customer.getId();
-        String customersLatestPaymentDate = findCustomersLatestPayment(customersId);
+        String customersLatestPaymentDate = customer.getLatestPaymentDate();
 
         boolean isMember = DateHandler.checkTimeDiff(
                 DateHandler.removeHyphenFromDate(customersLatestPaymentDate),

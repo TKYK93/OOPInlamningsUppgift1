@@ -55,19 +55,7 @@ class GymTest {
         assertTrue(gdt.findCustomer(nameNotExisting) == null);
     }
 
-    @Test
-    void findCustomersLatestPayment(){
-        long id = 234322;
-        String name = "customer 2";
-        long idNotExisting = 111111;
-        String nameNotExisting = "customer 5";
-        assertTrue(gdt.findCustomersLatestPayment(id) == "2020-10-07");
-        assertTrue(gdt.findCustomersLatestPayment(name) == "2020-10-07");
-        assertFalse(gdt.findCustomersLatestPayment(name) == "");
-        assertFalse(gdt.findCustomersLatestPayment(name) == "2021-10-06");
-        assertTrue(gdt.findCustomersLatestPayment(idNotExisting) == null);
-        assertTrue(gdt.findCustomersLatestPayment(nameNotExisting) == null);
-    }
+
 
     @Test
     void checkCustomersStatus(){
