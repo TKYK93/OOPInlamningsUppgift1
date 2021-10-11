@@ -15,14 +15,6 @@ public class Gym {
         this.customerList = new ArrayList<>();
     }
 
-    public Recorder getRecorder() {
-        return recorder;
-    }
-
-    public void setRecorder(Recorder recorder) {
-        this.recorder = recorder;
-    }
-
     public List<Customer> getCustomerList() {
         return customerList;
     }
@@ -33,7 +25,7 @@ public class Gym {
 
     public List<Customer> generateCustomerListFromFile(String fileName){
         List<Customer> customerList = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(fileName));){
+        try(BufferedReader br = new BufferedReader(new FileReader(fileName))){
             while(true){
                 String currentIdAndName = br.readLine();
 
@@ -49,7 +41,7 @@ public class Gym {
                 long id = Long.parseLong(IdAndName[0].trim());
                 String name = IdAndName[1].trim();
                 String latestPaymentDate = br.readLine();
-                customerList.add(new Customer(id, name, latestPaymentDate));;
+                customerList.add(new Customer(id, name, latestPaymentDate));
             }
         } catch (FileNotFoundException e){
             e.printStackTrace();
@@ -105,55 +97,61 @@ public class Gym {
         return findCustomer(name).getLatestPaymentDate();
     }
 
-    public String checkCustomersStatus(long id, LocalDate today){
-        String customersLatestPaymentDate = findCustomersLatestPayment(id);
-
-        if(customersLatestPaymentDate == null){
-            return id + " is not registered yet.";
+    public int checkCustomersStatus(Customer customer, LocalDate today){
+        if(customer == null){
+            return 0;
         }
 
-        boolean isMember = DateHandler.checkTimeDiff(
-                DateHandler.removeHyphenFromDate(customersLatestPaymentDate),
-                DateHandler.removeHyphenFromDate(today.toString())
-                );
-        if(isMember){
-            return findCustomer(id).getName() + " is a member.";
-        } else {
-            return findCustomer(id).getName()+ "'s pass is not validate.";
-        }
-    }
-
-    public String checkCustomersStatus(String name, LocalDate today){
-        String customersLatestPaymentDate = findCustomersLatestPayment(name);
-
-        if(customersLatestPaymentDate == null){
-            return name + " is not registered yet.";
-        }
+        long customersId = customer.getId();
+        String customersLatestPaymentDate = findCustomersLatestPayment(customersId);
 
         boolean isMember = DateHandler.checkTimeDiff(
                 DateHandler.removeHyphenFromDate(customersLatestPaymentDate),
                 DateHandler.removeHyphenFromDate(today.toString())
         );
         if(isMember){
-            return findCustomer(name).getName() + " is a member.";
+            return 1;
         } else {
-            return findCustomer(name).getName()+ "'s pass is not validate.";
+            return 2;
         }
     }
 
-    public boolean createCustomerRecord(String customerName){
-        long customerId = -1;
-        for(Customer currentCustomer : customerList){
-            if(currentCustomer.getName().equals(customerName)){
-                customerId = currentCustomer.getId();
-            }
+    public void printCustomersStatus(Customer customer, LocalDate today){
+        int statusNumber = checkCustomersStatus(customer, today);
+        switch (statusNumber){
+            case 0:
+                System.out.println("There is no such customer in the list.");
+                break;
+            case 1:
+                System.out.println(customer.getName() + " is a registered member.");
+                break;
+            case 2:
+                System.out.println(customer.getName() + "'s pass has expired.");
+                break;
+            default:
+                break;
         }
-        if(customerId == -1){
-            System.out.println(customerName + " is not registered yet.");
-            return false;
+    }
+
+    public boolean createCustomerRecord(Customer customer, LocalDate today){
+        int statusNumber = checkCustomersStatus(customer, today);
+        switch (statusNumber){
+            case 0:
+                System.out.println("There is no such customer in the list.");
+                return false;
+            case 1:
+                boolean isSuccess = recorder.createRecord(customer.getName(), customer.getId());
+                if(!isSuccess){
+                    return false;
+                }
+                System.out.println(customer.getName() + "'s record has been successfully created for today.");
+                return true;
+            case 2:
+                System.out.println(customer.getName() + "'s pass has expired.");
+                return false;
+            default:
+                return false;
         }
-        recorder.createRecord(customerName, customerId);
-        return true;
     }
 
     public boolean printCustomerRecord(String customerName) {

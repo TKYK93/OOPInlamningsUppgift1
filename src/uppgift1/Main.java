@@ -2,14 +2,12 @@ package uppgift1;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-import java.util.SortedMap;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
     static Gym gym = new Gym();
 
     public static void main(String[] args) {
-
 	    gym.setCustomerList(gym.generateCustomerListFromFile("src/uppgift1/customers.txt"));
         while (true){
             printMenu();
@@ -38,14 +36,17 @@ public class Main {
 
     public static void selectMenu(int menuNumber) {
         String customerName;
+        Customer customer;
         switch (menuNumber){
             case 1:
                 LocalDate today = LocalDate.now();
                 System.out.println("Please enter customer's name or ID number.");
                 if(scanner.hasNextLong()){
-                    System.out.println(gym.checkCustomersStatus(scanner.nextLong(), today));
+                    customer = gym.findCustomer(scanner.nextLong());
+                    gym.printCustomersStatus(customer,today);
                 } else if(scanner.hasNextLine()){
-                    System.out.println(gym.checkCustomersStatus(scanner.nextLine(), today));
+                    customer = gym.findCustomer(scanner.nextLine());
+                    gym.printCustomersStatus(customer, today);
                 } else {
                     System.out.println("Input should be name or ID number.");
                 }
@@ -54,7 +55,8 @@ public class Main {
             case 2:
                 System.out.println("Please enter customer's name that you would like to create a record for.");
                 customerName = scanner.nextLine();
-                gym.createCustomerRecord(customerName);
+                customer = gym.findCustomer(customerName);
+                gym.createCustomerRecord(customer, LocalDate.now());
                 break;
 
             case 3:

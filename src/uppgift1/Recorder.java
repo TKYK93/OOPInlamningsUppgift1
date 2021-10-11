@@ -8,12 +8,10 @@ public class Recorder {
 
     public boolean checkRecordExistence(String fileName){
         File file = new File(fileName);
-        boolean isFileExists = file.exists();
         if(file.exists()){
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean createRecord(String name, long id){
@@ -40,12 +38,12 @@ public class Recorder {
     }
 
     public boolean printRecord(String name) {
-        String recordName = "src/uppgift1/ " + name + ".txt";
+        String recordName = "src/uppgift1/" + name + ".txt";
         if(!checkRecordExistence(recordName)){
             return false;
         }
 
-        try(Scanner scanner = new Scanner(new FileReader(recordName));){
+        try(Scanner scanner = new Scanner(new FileReader(recordName))){
             while(scanner.hasNextLine()) {
                 System.out.println(scanner.nextLine());
             }

@@ -3,6 +3,8 @@ package uppgift1;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,11 +16,21 @@ class GymTest {
     Customer customer2 = new Customer(234322, "customer 2", "2020-10-07");
     Customer customer3 = new Customer(234323, "customer 3", "2019-10-07");
 
+    private final PrintStream standardOut = System.out;
+    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+
+
     @BeforeEach
     void setUp() {
         gdt.addCustomerIntoList(customer1);
         gdt.addCustomerIntoList(customer2);
         gdt.addCustomerIntoList(customer3);
+        System.setOut(new PrintStream(outputStreamCaptor));
+    }
+
+    @BeforeEach
+    public void tearDown() {
+        System.setOut(standardOut);
     }
 
     @Test
@@ -59,27 +71,42 @@ class GymTest {
 
     @Test
     void checkCustomersStatus(){
-        LocalDate today = LocalDate.now();
-        long id = 234321;
-        String name = "customer 1";
-        long idNotMember = 234323;
-        String nameNotMember = "customer 3";
-        long idNotExisting = 111111;
-        String nameNotExisting = "customer 5";
-        assertTrue(gdt.checkCustomersStatus(id, today).equals("customer 1 is a member.") );
-        assertTrue(gdt.checkCustomersStatus(name, today).equals("customer 1 is a member.") );
-        assertTrue(gdt.checkCustomersStatus(idNotMember, today).equals("customer 3's pass is not validate.") );
-        assertTrue(gdt.checkCustomersStatus(nameNotMember, today).equals("customer 3's pass is not validate.") );
-        assertTrue(gdt.checkCustomersStatus(idNotExisting, today).equals("111111 is not registered yet." ));
-        assertTrue(gdt.checkCustomersStatus(nameNotExisting, today).equals("customer 5 is not registered yet." ));
+        LocalDate today = LocalDate.of(2021, 10, 07);
+        assertTrue(gdt.checkCustomersStatus(customer1, today) == 1);
+        assertTrue(gdt.checkCustomersStatus(null, today) == 0);
+        assertTrue(gdt.checkCustomersStatus(customer3, today) == 2);
+    }
+
+    @Test
+    void printExistingCustomersStatus(){
+        LocalDate today = LocalDate.of(2021, 10, 07);
+        gdt.printCustomersStatus(customer1, today);
+        assertEquals("customer 1 is a registered member.", outputStreamCaptor.toString()
+                .trim());
+    }
+
+    @Test
+    void printExpiredCustomersStatus(){
+        LocalDate today = LocalDate.of(2021, 10, 07);
+        gdt.printCustomersStatus(customer3, today);
+        assertEquals("customer 3's pass has expired.", outputStreamCaptor.toString()
+                .trim());
+    }
+
+    @Test
+    void printNotExistingCustomersStatus() {
+        LocalDate today = LocalDate.of(2021, 10, 07);
+        gdt.printCustomersStatus(null, today);
+        assertEquals("There is no such customer in the list.", outputStreamCaptor.toString()
+                .trim());
     }
 
     @Test
     void createCustomerRecord(){
-        String name = "customer 2";
-        String nameNotExisting = "customer 5";
-        assertTrue(gdt.createCustomerRecord(name) == true);
-        assertTrue(gdt.createCustomerRecord(nameNotExisting) == false);
+        LocalDate today = LocalDate.of(2021, 10, 07);
+        assertTrue(gdt.createCustomerRecord(customer1, today) == true);
+        assertTrue(gdt.createCustomerRecord(customer3, today) == false);
+        assertTrue(gdt.createCustomerRecord(null, today) == false);
     }
 
     @Test
