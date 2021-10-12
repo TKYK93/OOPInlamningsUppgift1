@@ -90,10 +90,7 @@ public class Gym {
 
         String customersLatestPaymentDate = customer.getLatestPaymentDate();
 
-        boolean isMember = DateHandler.checkTimeDiff(
-                DateHandler.removeHyphenFromDate(customersLatestPaymentDate),
-                DateHandler.removeHyphenFromDate(today.toString())
-        );
+        boolean isMember = DateHandler.isTimeDiffWithin365Days(DateHandler.checkTimeDiff(customersLatestPaymentDate, today.toString()));
         if(isMember){
             return 1;
         } else {
