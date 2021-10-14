@@ -42,9 +42,13 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return id == customer.getId() && Objects.equals(name, customer.getName()) && Objects.equals(latestPaymentDate, customer.getLatestPaymentDate());
+        return id == customer.getId();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public String toString() {
