@@ -14,7 +14,7 @@ public class Main {
             if(scanner.hasNextInt()){
                 int menuNumber = scanner.nextInt();
                 scanner.nextLine();
-                if(menuNumber ==4 ){
+                if(menuNumber == 4 ){
                     break;
                 }
                 selectMenu(menuNumber);
@@ -37,26 +37,29 @@ public class Main {
     public static void selectMenu(int menuNumber) {
         String customerName;
         Customer customer;
+        int customerStatus;
+        LocalDate today = LocalDate.now();
         switch (menuNumber){
             case 1:
-                LocalDate today = LocalDate.now();
                 System.out.println("Please enter customer's name or ID number.");
                 if(scanner.hasNextLong()){
                     customer = gym.findCustomer(scanner.nextLong());
-                    gym.printCustomersStatus(customer,today);
                 } else if(scanner.hasNextLine()){
                     customer = gym.findCustomer(scanner.nextLine());
-                    gym.printCustomersStatus(customer, today);
                 } else {
                     System.out.println("Input should be name or ID number.");
+                    break;
                 }
+                customerStatus = gym.checkCustomersStatus(customer, today);
+                gym.printCustomersStatus(customer, customerStatus);
                 break;
 
             case 2:
                 System.out.println("Please enter customer's name that you would like to create a record for.");
                 customerName = scanner.nextLine();
                 customer = gym.findCustomer(customerName);
-                gym.createCustomerRecord(customer, LocalDate.now());
+                customerStatus = gym.checkCustomersStatus(customer, today);
+                gym.createCustomerRecord(customer, customerStatus);
                 break;
 
             case 3:

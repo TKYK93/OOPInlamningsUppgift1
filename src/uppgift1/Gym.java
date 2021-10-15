@@ -98,8 +98,7 @@ public class Gym {
         }
     }
 
-    public void printCustomersStatus(Customer customer, LocalDate today){
-        int statusNumber = checkCustomersStatus(customer, today);
+    public void printCustomersStatus(Customer customer, int statusNumber){
         switch (statusNumber){
             case 0:
                 System.out.println("There is no such customer in the list.");
@@ -115,8 +114,7 @@ public class Gym {
         }
     }
 
-    public boolean createCustomerRecord(Customer customer, LocalDate today){
-        int statusNumber = checkCustomersStatus(customer, today);
+    public boolean createCustomerRecord(Customer customer, int statusNumber){
         switch (statusNumber){
             case 0:
                 System.out.println("There is no such customer in the list.");

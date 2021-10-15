@@ -67,34 +67,30 @@ class GymTest {
 
     @Test
     void printExistingCustomersStatus(){
-        LocalDate today = LocalDate.of(2021, 10, 07);
-        gdt.printCustomersStatus(customer1, today);
+        gdt.printCustomersStatus(customer1, 1);
         assertEquals("customer 1 is a registered member.", outputStreamCaptor.toString()
                 .trim());
     }
 
     @Test
     void printExpiredCustomersStatus(){
-        LocalDate today = LocalDate.of(2021, 10, 07);
-        gdt.printCustomersStatus(customer3, today);
+        gdt.printCustomersStatus(customer3, 2);
         assertEquals("customer 3's pass has expired.", outputStreamCaptor.toString()
                 .trim());
     }
 
     @Test
     void printNotExistingCustomersStatus() {
-        LocalDate today = LocalDate.of(2021, 10, 07);
-        gdt.printCustomersStatus(null, today);
+        gdt.printCustomersStatus(null, 0);
         assertEquals("There is no such customer in the list.", outputStreamCaptor.toString()
                 .trim());
     }
 
     @Test
     void createCustomerRecord(){
-        LocalDate today = LocalDate.of(2021, 10, 07);
-        assertTrue(gdt.createCustomerRecord(customer1, today) == true);
-        assertTrue(gdt.createCustomerRecord(customer3, today) == false);
-        assertTrue(gdt.createCustomerRecord(null, today) == false);
+        assertTrue(gdt.createCustomerRecord(customer1, 1) == true);
+        assertTrue(gdt.createCustomerRecord(customer3, 2) == false);
+        assertTrue(gdt.createCustomerRecord(null, 0) == false);
     }
 
     @Test
